@@ -1,8 +1,17 @@
 {% extends 'main.html' %}
 
 {% block content %}
-    <h3>Single Project</h3>
+    <h1>{{ project.title }}</h1>
     <ul>
-        <li>ID: {{pk}} </li>
+        <li>ID: {{project.id}} </li>
+        <hr>
+        <li>
+            {% for tag in project.tags.all %}
+                <span style="border: 1px solid blue;">{{ tag }}</span>
+            {% endfor %}
+        </li>
+        <hr>
+        <li>Total votes: {{ project.votes_total }}</li>
+        <li>Votes Ratio: {{ project.votes_ratio }}</li>
     </ul>
 {% endblock content %}

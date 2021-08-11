@@ -2,8 +2,20 @@
 
 {% block content %}
     <h3>List of Projects</h3>
-    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Deleniti earum quam cum 
-        dolorem eligendi veniam vel aspernatur et error aperiam, 
-        necessitatibus quasi pariatur tenetur fugiat officiis assumenda laborum, nisi quia.
-    </p>
+    <table class="projects">
+        <tr>
+            <th>ID</th>
+            <th>Project</th>
+            <th>Votes</th>
+            <th>Ratio</th>
+        </tr>
+        {% for project in projects %}
+            <tr>
+                <td>{{project.id}}&emsp;</td>
+                <td><a href="{% url 'project' project.id%}">{{ project.title }}</a>&emsp;</td>
+                <td>{{ project.votes_total }}&emsp14;</td>
+                <td>{{ project.votes_ratio }}&emsp;</td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock content %}
