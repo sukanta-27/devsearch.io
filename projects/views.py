@@ -1,7 +1,6 @@
 from projects.models import Project
 from django.shortcuts import redirect, render
 from django.http import HttpResponse, request
-from .models import Project
 from .forms import ProjectForm
 
 # Create your views here.
