@@ -1,3 +1,4 @@
+from django.contrib.messages.api import info
 from django.http import request
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
@@ -5,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Profile
+from .forms import CustomUserCreationForm
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
@@ -14,7 +16,7 @@ def loginUser(request):
     if request.user.is_authenticated:
         return redirect('profiles')
 
-    if request.POST:
+    if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
 
@@ -34,12 +36,48 @@ def loginUser(request):
             logging.error("Username or Password is incorrect")
             messages.add_message(request, messages.WARNING, "Username or Password is incorrect")
 
-    return render(request, 'users/login-registration.html')
+    page = 'login'
+    context = {
+        'page': page,
+    }
+    return render(request, 'users/login-registration.html', context)
 
 @login_required(login_url='login')
 def logoutUser(request):
     logout(request)
     return redirect('login')
+
+def registerUser(request):
+    if request.user.is_authenticated:
+        return redirect('profiles')
+
+    page = 'register'
+    form = CustomUserCreationForm()
+
+    if request.method == "POST":
+        print(request.POST)
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+
+
+            login(request, user)
+            logging.info("User created Successfully!")
+            messages.success(request, "User created Successfully!")
+            return redirect("profiles")
+        else:
+            logging.info("An error occurred while creating the user")
+            messages.error(request, "An error occurred while creating the user")
+
+    context = {
+        'page': page,
+        "form": form,
+    }
+
+    return render(request, 'users/login-registration.html', context)
+    
 
 def profiles(request):
     profileList = Profile.objects.all()
